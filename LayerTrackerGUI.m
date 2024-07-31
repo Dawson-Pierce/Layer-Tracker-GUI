@@ -117,10 +117,10 @@ components.home_button.Text = 'Home';
 
 %% Connections 
 
-components.x_lower.ValueChangedFcn = @(src,event)change_limits(components);
-components.x_higher.ValueChangedFcn = @(src,event)change_limits(components);
-components.y_lower.ValueChangedFcn = @(src,event)change_limits(components);
-components.y_higher.ValueChangedFcn = @(src,event)change_limits(components);
+components.x_lower.ValueChangedFcn = @(src,event)change_limits(src,event,components);
+components.x_higher.ValueChangedFcn = @(src,event)change_limits(src,event,components);
+components.y_lower.ValueChangedFcn = @(src,event)change_limits(src,event,components);
+components.y_higher.ValueChangedFcn = @(src,event)change_limits(src,event,components);
 
 components.ax.ButtonDownFcn = @(src,event)plot_ButtonDownFcn(src,event,components);
 components.erase_last_point.ButtonPushedFcn = @(src,event)delete_last_point(src,event,components);
@@ -190,7 +190,7 @@ current_y_lim = handles.YLim;
 
 dist_y = current_y_lim(2) - current_y_lim(1);
 
-new_y_lim = [current_y_lim(1) + scale_factor * dist_y, current_y_lim(2) + scale_factor * dist_y];
+new_y_lim = [round(current_y_lim(1) + scale_factor * dist_y), round(current_y_lim(2) + scale_factor * dist_y)];
 
 components.y_lower.Value = new_y_lim(1);
 components.y_higher.Value = new_y_lim(2);
@@ -212,7 +212,7 @@ current_y_lim = handles.YLim;
 
 dist_y = current_y_lim(2) - current_y_lim(1);
 
-new_y_lim = [current_y_lim(1) - scale_factor * dist_y, current_y_lim(2) - scale_factor * dist_y];
+new_y_lim = [round(current_y_lim(1) - scale_factor * dist_y), round(current_y_lim(2) - scale_factor * dist_y)];
 
 components.y_lower.Value = new_y_lim(1);
 components.y_higher.Value = new_y_lim(2);
@@ -234,7 +234,7 @@ current_x_lim = handles.XLim;
 
 dist_x = current_x_lim(2) - current_x_lim(1);
 
-new_x_lim = [current_x_lim(1) + scale_factor * dist_x, current_x_lim(2) + scale_factor * dist_x];
+new_x_lim = [round(current_x_lim(1) + scale_factor * dist_x), round(current_x_lim(2) + scale_factor * dist_x)];
 
 components.x_lower.Value = new_x_lim(1);
 components.x_higher.Value = new_x_lim(2);
@@ -256,7 +256,7 @@ current_x_lim = handles.XLim;
 
 dist_x = current_x_lim(2) - current_x_lim(1);
 
-new_x_lim = [current_x_lim(1) - scale_factor * dist_x, current_x_lim(2) - scale_factor * dist_x];
+new_x_lim = [round(current_x_lim(1) - scale_factor * dist_x), round(current_x_lim(2) - scale_factor * dist_x)];
 
 components.x_lower.Value = new_x_lim(1);
 components.x_higher.Value = new_x_lim(2);
@@ -280,8 +280,8 @@ current_y_lim = handles.YLim;
 dist_x = current_x_lim(2) - current_x_lim(1);
 dist_y = current_y_lim(2) - current_y_lim(1);
 
-new_x_lim = [current_x_lim(1) + scale_factor * dist_x, current_x_lim(2) - scale_factor * dist_x];
-new_y_lim = [current_y_lim(1) + scale_factor * dist_y, current_y_lim(2) - scale_factor * dist_y];
+new_x_lim = [round(current_x_lim(1) + scale_factor * dist_x), round(current_x_lim(2) - scale_factor * dist_x)];
+new_y_lim = [round(current_y_lim(1) + scale_factor * dist_y), round(current_y_lim(2) - scale_factor * dist_y)];
 
 components.x_lower.Value = new_x_lim(1);
 components.x_higher.Value = new_x_lim(2);
@@ -310,8 +310,8 @@ current_y_lim = handles.YLim;
 dist_x = current_x_lim(2) - current_x_lim(1);
 dist_y = current_y_lim(2) - current_y_lim(1);
 
-new_x_lim = [current_x_lim(1) - scale_factor * dist_x, current_x_lim(2) + scale_factor * dist_x];
-new_y_lim = [current_y_lim(1) - scale_factor * dist_y, current_y_lim(2) + scale_factor * dist_y];
+new_x_lim = [round(current_x_lim(1) - scale_factor * dist_x), round(current_x_lim(2) + scale_factor * dist_x)];
+new_y_lim = [round(current_y_lim(1) - scale_factor * dist_y), round(current_y_lim(2) + scale_factor * dist_y)];
 
 components.x_lower.Value = new_x_lim(1);
 components.x_higher.Value = new_x_lim(2);
@@ -415,12 +415,14 @@ run(components)
 
 end
 
-function [components] = change_limits(components)
+function change_limits(hObject, eventdata,components)
 
 handles = guidata(hObject);
 
 handles.XLim = [components.x_lower.Value components.x_higher.Value];
 handles.YLim = [components.y_lower.Value components.y_higher.Value];
+
+guidata(components.fig, handles);
 
 run(components)
 
