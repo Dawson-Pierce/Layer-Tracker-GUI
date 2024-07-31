@@ -452,13 +452,19 @@ if handles.run_flag
             end
         end
 
+        if ~isempty(handles.current_track)
+            for k = 1:length(guidata(components.fig).current_track)
+                scatter(components.ax,guidata(components.fig).current_track(1,:),guidata(components.fig).current_track(2,:),'b*')
+            end
+        end
+
     end
 
-    if ~isempty(handles) && ~isempty(handles.current_track)
-        for k = 1:length(guidata(components.fig).current_track)
-            scatter(components.ax,guidata(components.fig).current_track(1,:),guidata(components.fig).current_track(2,:),'b*')
-        end
-    end
+    % if ~isempty(handles) && ~isempty(handles.current_track)
+    %     for k = 1:length(guidata(components.fig).current_track)
+    %         scatter(components.ax,guidata(components.fig).current_track(1,:),guidata(components.fig).current_track(2,:),'b*')
+    %     end
+    % end
 
     guidata(components.fig, handles);
 
@@ -476,13 +482,12 @@ y = eventdata.IntersectionPoint(2);
 % disp(y)
 
 handles = guidata(hObject);
-if isempty(handles)
-    handles.current_track = [];
-end
 current_point = [x, y]';
 handles.current_track = [handles.current_track current_point];
 handles.replot_flag = 0;
 guidata(hObject, handles);   % Write the modified struct back to the figure
+
+scatter(components.ax,current_point(1),current_point(2),'b*')
 
 run(components)
 
