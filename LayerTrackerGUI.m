@@ -445,7 +445,7 @@ if handles.run_flag
 
         handles.replot_flag = 0;
 
-        if ~isempty(handles.previous_tracks)
+        if ~isempty(handles.previous_tracks{1})
             for kk = 1:length(handles.previous_tracks)
                 current_track = handles.previous_tracks{kk};
                 plot(components.ax,current_track(1,:),current_track(2,:),'r')
