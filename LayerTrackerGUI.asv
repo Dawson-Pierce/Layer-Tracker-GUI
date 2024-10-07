@@ -1,11 +1,9 @@
 
-clear; clc; 
+clear; clc; close all
 
-components.file_name = '20181219_035408.mat';
+load("20181231_044516.mat")
 
-load(components.file_name)
-
-components.data = wiener2_modified(:,1000:1800);
+components.data = wiener2_modified;
 
 
 %% Build GUI 
@@ -441,7 +439,7 @@ end
 
 t = handles.previous_tracks;
 
-structfilename = ['Truth-',components.file_name];
+structfilename = 'truth-' + string(datetime('now','Format','MM-dd-yy-HH-mm-ss')) + '.mat';
 
 save(structfilename,'t');
 
@@ -586,24 +584,13 @@ if handles.edit_track_flag == 0 && handles.deleting_flag == 0
     scatter(components.ax,current_point(1),current_point(2),'b*','HitTest','off')
     
     run(components)
-
 elseif handles.edit_track_flag == 0 && handles.deleting_flag == 1
     for k = 1:length(handles.current_track)
         dist(k) = sqrt((handles.current_track(1,k)-x)^2+(handles.current_track(2,k)-y)^2);
     end
     [val,ind] = min(dist); 
     iter = 1;
-    for k = 1:length(handles.current_track)
-        if k ~= ind
-            new_track(:,iter) = handles.current_track(:,k);
-            iter = iter + 1;
-        end
-    end
-    handles.current_track = new_track;
-    handles.replot_flag = 1;
-    guidata(hObject, handles);   % Write the modified struct back to the figure
-    run(components)
-
+    for k = 1:length()
 else
     for k = 1:length(handles.previous_tracks)
         % fprintf('%1i out of %1i\n',k,length(handles.previous_tracks))
@@ -632,5 +619,6 @@ else
     guidata(hObject, handles);   % Write the modified struct back to the figure
     run(components)
 end
+    
 end
 
