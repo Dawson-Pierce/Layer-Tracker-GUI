@@ -1,12 +1,33 @@
+clear; clc;
 
-clear; clc; 
-
-components.file_name = '20181219_035408.mat';
-
-load(components.file_name)
-
-components.data = wiener2_modified(:,1000:1800);
-
+[file,path] = uigetfile('*.mat','Select a data .mat file');
+if isequal(file,0)
+    error('No file selected. Exiting.');
+else
+    components.file_name = file;
+    full_path = fullfile(path, file);
+    loaded_data = load(full_path);
+    
+    if isfield(loaded_data, 'wiener2_modified')
+        components.data = loaded_data.wiener2_modified(:,:);
+    else
+        error('Selected file does not contain "wiener2_modified".');
+    end
+    
+    % Check for optional truth data file
+    truth_file = fullfile(path, ['Truth-' file]);
+    if isfile(truth_file)
+        truth_data = load(truth_file);
+        if isfield(truth_data, 't')
+            default_truth = truth_data.t;
+        else
+            warning('Truth file found but does not contain variable "t".');
+            default_truth = {[]};
+        end
+    else
+        default_truth = {[]};
+    end
+end
 
 %% Build GUI 
 
@@ -21,7 +42,7 @@ components.ax.Layout.Row = [1 10];
 components.ax.Layout.Column = 1;
 grid(components.ax,'on')
 components.ax.Color = 'w';
-components.ax.Title.String = 'Manually Track The Layers';
+components.ax.Title.String = "Manually tracking " + replace(components.file_name,'_','\_');
 imagesc(components.ax,components.data,'HitTest','off'); 
 hold(components.ax,'on')
 colormap(components.ax,1-gray)
@@ -220,8 +241,8 @@ if handles.edit_track_flag == 0
     set(components.edit_track_button,'FontColor','w')
 else 
     handles.edit_track_flag = 0;
-    set(components.edit_track_button,'BackgroundColor','w')
-    set(components.edit_track_button,'FontColor','k')
+    set(components.edit_track_button,'BackgroundColor',[0.1294    0.1294    0.1294])
+    set(components.edit_track_button,'FontColor','w')
 end
 
 guidata(hObject,handles)
@@ -623,8 +644,8 @@ else
         end
     end
 
-    set(components.edit_track_button,'BackgroundColor','w')
-    set(components.edit_track_button,'FontColor','k')
+    set(components.edit_track_button,'BackgroundColor',[0.1294    0.1294    0.1294])
+    set(components.edit_track_button,'FontColor','w')
     handles.current_track = handles.previous_tracks{ind};
     handles.previous_tracks = new_previous_tracks;
     handles.replot_flag = 1;
